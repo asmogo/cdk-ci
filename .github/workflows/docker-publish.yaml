@@ -13,6 +13,10 @@ jobs:
       with:
         repository: "cashubtc/cdk"
         path: "cdk"
+    - name: Copy flakes
+      working-direcotry: cdk
+      run: |
+        cp flake.nix flake.lock ../.
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v2
       with:

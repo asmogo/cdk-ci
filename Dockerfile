@@ -62,7 +62,7 @@ RUN set -eux; \
 # Pre-build devshell closures for faster cold starts (optional)
 # Copy just flake files to leverage Docker layer cache
 WORKDIR /prebuild
-COPY cdk/flake.nix cdk/flake.lock ./
+COPY flake.nix flake.lock ./
 # Build each devShell closurelosure without entering it (succeeds without project sources)
 # This pulls toolchains, just, typos, bitcoind, lnd, cln, etc. as referenced by devShells.
 RUN set -eux; nix --version \
