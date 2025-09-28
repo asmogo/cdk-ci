@@ -28,7 +28,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Build and push
       uses: docker/build-push-action@v3
-      working-directory: cdk-ci
       with:
+        context: cdk-ci
         push: true
         tags: ghcr.io/${{ github.repository }}:${{ github.sha }}
