@@ -14,7 +14,7 @@ jobs:
         repository: "cashubtc/cdk"
         path: "cdk"
     - name: Copy flakes
-      working-direcotry: cdk
+      working-directory: cdk
       run: |
         cp flake.nix flake.lock ../.
     - name: Login to GitHub Container Registry
