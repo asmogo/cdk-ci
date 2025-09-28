@@ -89,4 +89,5 @@ RUN mkdir -p /root/.docker/cli-plugins \
   esac \
   && curl -L "$comp_url" -o /root/.docker/cli-plugins/docker-compose \
   && chmod +x /root/.docker/cli-plugins/docker-compose \
+  && git config --global --add safe.directory /work \
   && docker compose version
