@@ -27,15 +27,14 @@ SHELL ["/bin/sh", "-c"]
 
 ENV PATH=/root/.nix-profile/bin:/nix/var/nix/profiles/default/bin:${PATH}
 RUN set -eux; nix --version
-
 # Configure Nix: enable flakes; accept flake config; keep outputs for caching layers
 RUN set -eux; mkdir -p /etc/nix \
   && printf '%s\n' \
-     'experimental-features = nix-command flakes' \
-     'accept-flake-config = true' \
-     'keep-outputs = true' \
-     'keep-derivations = true' \
-     > /etc/nix/nix.conf
+  'experimental-features = nix-command flakes' \
+  'accept-flake-config = true' \
+  'keep-outputs = true' \
+  'keep-derivations = true' \
+  > /etc/nix/nix.conf
 
 # Optional: Add popular binary caches to speed up CI (public keys included)
 ## Uncomment if you want extra substituters beyond cache.nixos.org
@@ -50,21 +49,21 @@ RUN set -eux; \
   nix profile remove --impure curl || true; \
   nix profile remove --impure bash-interactive || true; \
   nix profile install --impure --accept-flake-config \
-    nixpkgs#docker-client \
-    nixpkgs#docker-compose \
-    nixpkgs#bashInteractive \
-    nixpkgs#tini \
-    nixpkgs#jq \
-    nixpkgs#git \
-    nixpkgs#curl \
-    nixpkgs#xz \
-    nixpkgs#bzip2
+  nixpkgs#docker-client \
+  nixpkgs#docker-compose \
+  nixpkgs#bashInteractive \
+  nixpkgs#tini \
+  nixpkgs#jq \
+  nixpkgs#git \
+  nixpkgs#curl \
+  nixpkgs#xz \
+  nixpkgs#bzip2
 
 # Pre-build devshell closures for faster cold starts (optional)
 # Copy just flake files to leverage Docker layer cache
 WORKDIR /prebuild
-COPY flake.nix flake.lock ./
-# Build each devShell closure without entering it (succeeds without project sources)
+COPY cdk/flake.nix cdk/flake.lock ./
+# Build each devShell closurelosure without entering it (succeeds without project sources)
 # This pulls toolchains, just, typos, bitcoind, lnd, cln, etc. as referenced by devShells.
 RUN set -eux; nix --version \
   && nix develop -i -L .#stable --command true || true \
@@ -81,13 +80,13 @@ CMD ["sh"]
 
 # Install Docker Compose v2 CLI plugin so `docker compose` works
 RUN mkdir -p /root/.docker/cli-plugins \
- && arch="$(uname -m)" \
- && case "$arch" in \
-      x86_64) comp_url="https://github.com/docker/compose/releases/download/v2.29.7/docker-compose-linux-x86_64" ;; \
-      aarch64) comp_url="https://github.com/docker/compose/releases/download/v2.29.7/docker-compose-linux-aarch64" ;; \
-      arm64) comp_url="https://github.com/docker/compose/releases/download/v2.29.7/docker-compose-linux-aarch64" ;; \
-      *) echo "Unsupported arch: $arch" && exit 1 ;; \
-    esac \
- && curl -L "$comp_url" -o /root/.docker/cli-plugins/docker-compose \
- && chmod +x /root/.docker/cli-plugins/docker-compose \
- && docker compose version
+  && arch="$(uname -m)" \
+  && case "$arch" in \
+  x86_64) comp_url="https://github.com/docker/compose/releases/download/v2.29.7/docker-compose-linux-x86_64" ;; \
+  aarch64) comp_url="https://github.com/docker/compose/releases/download/v2.29.7/docker-compose-linux-aarch64" ;; \
+  arm64) comp_url="https://github.com/docker/compose/releases/download/v2.29.7/docker-compose-linux-aarch64" ;; \
+  *) echo "Unsupported arch: $arch" && exit 1 ;; \
+  esac \
+  && curl -L "$comp_url" -o /root/.docker/cli-plugins/docker-compose \
+  && chmod +x /root/.docker/cli-plugins/docker-compose \
+  && docker compose version
